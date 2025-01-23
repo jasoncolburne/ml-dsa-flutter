@@ -1,16 +1,47 @@
 # ml_dsa_example
 
-Demonstrates how to use the ml_dsa plugin.
+Demonstrates how to use the ml_dsa package.
 
-## Getting Started
+## testing
 
-This project is a starting point for a Flutter application.
+`flutter test` doesn't build the keccak library. One can run all the tests with
+`flutter run` for now.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Known Answer Tests
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```
+flutter run integration_test/integration_test.dart
+```
+
+or, for web:
+
+```
+flutter run -d chrome integration_test/integration_test.dart
+```
+
+### Round-Trip Tests
+
+```
+flutter run test/ml_dsa_test.dart
+```
+
+or, for web:
+
+```
+flutter run -d chrome test/ml_dsa_test.dart
+```
+
+### Interactive app
+
+A test app is also available,
+
+```
+flutter run lib/main.dart
+```
+
+or 
+
+```
+flutter run -d chrome lib/main.dart
+```
