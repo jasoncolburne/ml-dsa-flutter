@@ -11,7 +11,7 @@ I took implementations of Keccak from hashlib (for web/32-bit) and the
 reference in C (for 64-bit). I needed to modify them slightly to permit
 some of the squeezing operations.
 
-## testing
+## Testing
 
 `flutter test` doesn't build the keccak library. One can run all the tests with
 `flutter run` for now.
@@ -60,3 +60,8 @@ or
 cd example
 flutter run -d chrome lib/main.dart
 ```
+
+## Performance
+
+Performance should be comparable to `ml-dsa-dart` on most platforms, but web will be
+slower.
