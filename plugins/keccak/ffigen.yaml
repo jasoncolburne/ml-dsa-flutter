@@ -1,7 +1,7 @@
 # Run with `dart run ffigen --config ffigen.yaml`.
 name: KeccakBindings
 description: |
-  Bindings for `src/keccak.h`.
+  Bindings for `KeccakSum`.
 
   Regenerate bindings with `dart run ffigen --config ffigen.yaml`.
 output: 'lib/keccak_bindings_generated.dart'
