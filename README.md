@@ -8,7 +8,7 @@ Then, I ported to dart in https://github.com/jasoncolburne/ml-dsa-dart.
 Only tested for macOS, iOS, Android and Web.
 
 I took implementations of Keccak from hashlib (for web/32-bit) and the
-reference in C (for 64-bit). I needed to modify them slightly to permit
+optimized reference in C (for 64-bit). I needed to modify them slightly to permit
 some of the squeezing operations.
 
 ## Testing

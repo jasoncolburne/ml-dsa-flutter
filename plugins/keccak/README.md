@@ -2,9 +2,13 @@
 
 A modified version of the Keccak algorithm for use in ML-DSA.
 
-Uses the C reference implementation for 64-bit targets, and a pure dart implementation for web (yes, this library is web compatible).
+Uses the optimized C reference implementation for 64-bit targets, and a pure dart
+implementation for web (yes, this library is web compatible).
 
-The async routines aren't even used in the ML-DSA implementation, but there the are.
+Async is not implemented with service workers for web.
+
+The async routines also aren't even used in the ML-DSA implementation, but there
+they are.
 
 ## testing
 
