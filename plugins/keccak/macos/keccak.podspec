@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'keccak'
-  s.version          = '0.0.1'
+  s.version          = '0.1.0'
   s.summary          = 'The Keccak hash algorithm.'
   s.description      = <<-DESC
 The Keccak hash algorithm.
