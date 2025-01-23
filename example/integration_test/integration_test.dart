@@ -66,8 +66,6 @@ void main() async {
   if (kIsWeb) {
     print(
         'service worker not implemented on web, wait a while for results (a minute)');
-  } else {
-    print('compute isolate not used, wait a few seconds for results');
   }
 
   runApp(MyApp());
@@ -95,13 +93,17 @@ class _MyAppState extends State<MyApp> {
       setState(() {
         results['ML-DSA-44'] = result44;
       });
+    });
 
+    Future.microtask(() async {
       final result65 =
           await testMLDSAKAT(MLDSA65Parameters(), ML_DSA_65_TestVectors);
       setState(() {
         results['ML-DSA-65'] = result65;
       });
+    });
 
+    Future.microtask(() async {
       final result87 =
           await testMLDSAKAT(MLDSA87Parameters(), ML_DSA_87_TestVectors);
       setState(() {
@@ -126,11 +128,13 @@ class _MyAppState extends State<MyApp> {
               children: [
                 Text(variant),
                 SizedBox(width: 24),
-                Text(results[variant] == null
-                    ? '...'
-                    : results[variant]!
-                        ? 'Success!'
-                        : 'Failure.'),
+                Text(
+                  results[variant] == null
+                      ? '...'
+                      : results[variant]!
+                          ? 'Success!'
+                          : 'Failure.',
+                ),
               ],
             );
           }).toList(),
