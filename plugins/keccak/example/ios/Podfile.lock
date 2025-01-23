@@ -1,6 +1,6 @@
 PODS:
   - Flutter (1.0.0)
-  - keccak (0.0.1):
+  - keccak (0.1.0):
     - Flutter
 
 DEPENDENCIES:
@@ -15,7 +15,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  keccak: 41b1cbbee7412bcf3507fdd7c9c3fee5ceae1e3d
+  keccak: 1d0759414fe8816af4d8d2a5f82fc762b09793d2
 
 PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 
