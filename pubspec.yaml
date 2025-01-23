@@ -1,6 +1,6 @@
 name: ml_dsa
 description: "Module-Lattice-Based Digital Signature Standard"
-version: 0.0.1+1
+version: 0.1.0+1
 homepage: https://github.com/jasoncolburne/ml-dsa-flutter
 publish_to: none
 
