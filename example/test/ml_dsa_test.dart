@@ -7,13 +7,13 @@ import 'package:ml_dsa/ml_dsa.dart';
 Future<bool> testRoundtrip(ParameterSet params) async {
   final MLDSA dsa = MLDSA(params);
 
-  final (pk, sk) = await dsa.keyGen();
+  final (pk, sk) = await dsa.keyGenAsync();
   final msg = utf8.encode("message");
   final ctx = utf8.encode("context");
 
-  final sig = await dsa.sign(sk, msg, ctx);
+  final sig = await dsa.signAsync(sk, msg, ctx);
 
-  return await dsa.verify(pk, msg, sig, ctx);
+  return await dsa.verifyAsync(pk, msg, sig, ctx);
 }
 
 void main() {

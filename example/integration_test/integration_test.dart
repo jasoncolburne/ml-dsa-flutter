@@ -24,7 +24,7 @@ Future<bool> testMLDSAKAT(
 
   for (final vector in katVectors) {
     final seed = Uint8List.fromList(HEX.decode(vector['Seed']!));
-    final (pk, sk) = await dsa.keyGenWithSeed(seed);
+    final (pk, sk) = await dsa.keyGenWithSeedAsync(seed);
 
     if (vector['PublicKey'] != HEX.encode(pk)) {
       print('bad pk:');
@@ -45,7 +45,7 @@ Future<bool> testMLDSAKAT(
     final message = Uint8List.fromList(HEX.decode(vector['Message']!));
     final ctx = Uint8List.fromList(HEX.decode(vector['Context']!));
 
-    final sig = await dsa.signDeterministically(sk, message, ctx);
+    final sig = await dsa.signDeterministicallyAsync(sk, message, ctx);
     final Uint8List sm = Uint8List(sig.length + message.length);
     sm.setRange(0, sig.length, sig);
     sm.setRange(sig.length, sm.length, message);
