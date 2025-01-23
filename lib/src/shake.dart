@@ -9,7 +9,6 @@ class IncrementalSHAKE {
 
   IncrementalSHAKE(this.bitLength) {
     _shake = keccak.create();
-    // necessary to initialize C implementation
     reset();
   }
 
