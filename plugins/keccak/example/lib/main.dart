@@ -1,8 +1,8 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
-import 'package:flutter/material.dart';
 import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 import 'package:keccak/keccak.dart' as keccak;
 
@@ -24,7 +24,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<Uint8List> squeezeExample() async {
     final shake256 = keccak.create();
-    
+
     for (int i = 0; i < 10000; i++) {
       keccak.initialize(shake256, 1088, 512, 0, 0x1f);
       await keccak.absorbAsync(shake256, utf8.encode("some data"));
@@ -54,10 +54,18 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     const textStyle = TextStyle(fontSize: 25);
     const spacerSmall = SizedBox(height: 10);
+
+    const title = kIsWeb ? 'Web Implementation' : 'Native packages';
+    const description = kIsWeb
+        ? 'This calls a web limplementation using 32-bit operations '
+            'to emulate 64-bit ones.'
+        : 'This calls a native function through FFI that is shipped as source in the package. '
+            'The native code is built as part of the Flutter Runner build.';
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Native Packages'),
+          title: const Text(title),
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -65,15 +73,15 @@ class _MyAppState extends State<MyApp> {
             child: Column(
               children: [
                 const Text(
-                  'This calls a native function through FFI that is shipped as source in the package. '
-                  'The native code is built as part of the Flutter Runner build.',
+                  description,
                   style: textStyle,
                   textAlign: TextAlign.center,
                 ),
                 spacerSmall,
                 FutureBuilder<Uint8List>(
                   future: squeezeAsyncResult,
-                  builder: (BuildContext context, AsyncSnapshot<Uint8List> value) {
+                  builder:
+                      (BuildContext context, AsyncSnapshot<Uint8List> value) {
                     final displayValue =
                         (value.hasData) ? value.data : 'loading';
                     return Text(
@@ -86,7 +94,8 @@ class _MyAppState extends State<MyApp> {
                 spacerSmall,
                 FutureBuilder<Uint8List>(
                   future: sha3AsyncResult,
-                  builder: (BuildContext context, AsyncSnapshot<Uint8List> value) {
+                  builder:
+                      (BuildContext context, AsyncSnapshot<Uint8List> value) {
                     final displayValue =
                         (value.hasData) ? value.data : 'loading';
                     return Text(

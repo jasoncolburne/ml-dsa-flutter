@@ -10,7 +10,8 @@ void free(KeccakInstance instance) {
   throw UnimplementedError();
 }
 
-void initialize(KeccakInstance instance, int rate, int capacity, int hashBitLen, int delimitedSuffix) {
+void initialize(KeccakInstance instance, int rate, int capacity, int hashBitLen,
+    int delimitedSuffix) {
   throw UnimplementedError();
 }
 
@@ -26,7 +27,8 @@ Uint8List squeeze(KeccakInstance instance, int bytesToSqueeze) {
   throw UnimplementedError();
 }
 
-Future<Uint8List> squeezeAsync(KeccakInstance instance, int bytesToSqueeze) async {
+Future<Uint8List> squeezeAsync(
+    KeccakInstance instance, int bytesToSqueeze) async {
   throw UnimplementedError();
 }
 

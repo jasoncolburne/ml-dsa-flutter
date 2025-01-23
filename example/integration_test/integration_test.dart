@@ -6,7 +6,6 @@
 // For more information about Flutter integration tests, please see
 // https://flutter.dev/to/integration-testing
 
-
 // ignore_for_file: avoid_print
 
 import 'package:flutter/foundation.dart';
@@ -19,7 +18,8 @@ import 'kat_MLDSA_44_det_pure.dart';
 import 'kat_MLDSA_65_det_pure.dart';
 import 'kat_MLDSA_87_det_pure.dart';
 
-Future<bool> testMLDSAKAT(ParameterSet params, List<Map<String, String>> katVectors) async {
+Future<bool> testMLDSAKAT(
+    ParameterSet params, List<Map<String, String>> katVectors) async {
   final dsa = MLDSA(params);
 
   for (final vector in katVectors) {
@@ -64,7 +64,8 @@ Future<bool> testMLDSAKAT(ParameterSet params, List<Map<String, String>> katVect
 
 void main() async {
   if (kIsWeb) {
-    print('service worker not implemented on web, wait a while for results (a minute)');
+    print(
+        'service worker not implemented on web, wait a while for results (a minute)');
   } else {
     print('compute isolate not used, wait a few seconds for results');
   }
@@ -89,14 +90,23 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     Future.microtask(() async {
-      final result44 = await testMLDSAKAT(MLDSA44Parameters(), ML_DSA_44_TestVectors);
-      setState(() { results['ML-DSA-44'] = result44; });
+      final result44 =
+          await testMLDSAKAT(MLDSA44Parameters(), ML_DSA_44_TestVectors);
+      setState(() {
+        results['ML-DSA-44'] = result44;
+      });
 
-      final result65 = await testMLDSAKAT(MLDSA65Parameters(), ML_DSA_65_TestVectors);
-      setState(() { results['ML-DSA-65'] = result65; });
+      final result65 =
+          await testMLDSAKAT(MLDSA65Parameters(), ML_DSA_65_TestVectors);
+      setState(() {
+        results['ML-DSA-65'] = result65;
+      });
 
-      final result87 = await testMLDSAKAT(MLDSA87Parameters(), ML_DSA_87_TestVectors);
-      setState(() { results['ML-DSA-87'] = result87; });
+      final result87 =
+          await testMLDSAKAT(MLDSA87Parameters(), ML_DSA_87_TestVectors);
+      setState(() {
+        results['ML-DSA-87'] = result87;
+      });
     });
 
     super.initState();
@@ -116,7 +126,11 @@ class _MyAppState extends State<MyApp> {
               children: [
                 Text(variant),
                 SizedBox(width: 24),
-                Text(results[variant] == null ? '...' : results[variant]! ? 'Success!' : 'Failure.'),
+                Text(results[variant] == null
+                    ? '...'
+                    : results[variant]!
+                        ? 'Success!'
+                        : 'Failure.'),
               ],
             );
           }).toList(),

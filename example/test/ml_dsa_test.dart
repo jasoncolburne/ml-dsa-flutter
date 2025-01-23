@@ -13,7 +13,7 @@ Future<bool> testRoundtrip(ParameterSet params) async {
 
   final sig = await dsa.sign(sk, msg, ctx);
 
-  return await dsa.verify(pk, msg, sig, ctx);    
+  return await dsa.verify(pk, msg, sig, ctx);
 }
 
 void main() {
@@ -38,13 +38,19 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     Future.microtask(() async {
       final result44 = await testRoundtrip(MLDSA44Parameters());
-      setState(() { results['ML-DSA-44'] = result44; });
+      setState(() {
+        results['ML-DSA-44'] = result44;
+      });
 
       final result65 = await testRoundtrip(MLDSA65Parameters());
-      setState(() { results['ML-DSA-65'] = result65; });
+      setState(() {
+        results['ML-DSA-65'] = result65;
+      });
 
       final result87 = await testRoundtrip(MLDSA87Parameters());
-      setState(() { results['ML-DSA-87'] = result87; });
+      setState(() {
+        results['ML-DSA-87'] = result87;
+      });
     });
 
     super.initState();
@@ -64,7 +70,11 @@ class _MyAppState extends State<MyApp> {
               children: [
                 Text(variant),
                 SizedBox(width: 24),
-                Text(results[variant] == null ? '...' : results[variant]! ? 'Success!' : 'Failure.'),
+                Text(results[variant] == null
+                    ? '...'
+                    : results[variant]!
+                        ? 'Success!'
+                        : 'Failure.'),
               ],
             );
           }).toList(),

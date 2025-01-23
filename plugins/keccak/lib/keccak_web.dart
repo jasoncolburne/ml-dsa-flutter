@@ -13,7 +13,8 @@ void free(KeccakInstance instance) {
   // no op
 }
 
-void initialize(KeccakInstance instance, int rate, int capacity, int hashBitLen, int delimitedSuffix) {
+void initialize(KeccakInstance instance, int rate, int capacity, int hashBitLen,
+    int delimitedSuffix) {
   final stateSize = capacity >> 4;
 
   instance.stateSize = stateSize;
@@ -37,12 +38,14 @@ Uint8List squeeze(KeccakInstance instance, int bytesToSqueeze) {
   return instance.squeeze(bytesToSqueeze * 8);
 }
 
-Future<Uint8List> squeezeAsync(KeccakInstance instance, int bytesToSqueeze) async {
-  return squeeze(instance, bytesToSqueeze * 8);
+Future<Uint8List> squeezeAsync(
+    KeccakInstance instance, int bytesToSqueeze) async {
+  return squeeze(instance, bytesToSqueeze);
 }
 
 Uint8List sha3_512(Uint8List input) {
-  final instance = KeccakHash(stateSize: 512 >> 3, paddingByte: 0x06, outputSize: 64);
+  final instance =
+      KeccakHash(stateSize: 512 >> 3, paddingByte: 0x06, outputSize: 64);
   instance.add(input);
   return instance.$finalize();
 }

@@ -131,7 +131,8 @@ class _CryptoWidgetState extends State<CryptoWidget> {
         ElevatedButton(
           onPressed: () async {
             if (_sig.isEmpty) {
-              final snackbar = SnackBar(content: Text('Must create a signature'));
+              final snackbar =
+                  SnackBar(content: Text('Must create a signature'));
 
               if (!context.mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(snackbar);
@@ -156,9 +157,15 @@ class _CryptoWidgetState extends State<CryptoWidget> {
           },
           child: Text('Verify'),
         ),
-        if (_pk.isNotEmpty) Text("Public (${_pk.length} bytes): ${HEX.encode(_pk.sublist(0, 8))}..."),
-        if (_sk.isNotEmpty) Text("Private (${_sk.length} bytes): ${HEX.encode(_sk.sublist(0, 8))}..."),
-        if (_sig.isNotEmpty) Text("Signature (${_sig.length} bytes): ${HEX.encode(_sig.sublist(0, 8))}..."),
+        if (_pk.isNotEmpty)
+          Text(
+              "Public (${_pk.length} bytes): ${HEX.encode(_pk.sublist(0, 8))}..."),
+        if (_sk.isNotEmpty)
+          Text(
+              "Private (${_sk.length} bytes): ${HEX.encode(_sk.sublist(0, 8))}..."),
+        if (_sig.isNotEmpty)
+          Text(
+              "Signature (${_sig.length} bytes): ${HEX.encode(_sig.sublist(0, 8))}..."),
       ]),
     );
   }

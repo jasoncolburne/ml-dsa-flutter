@@ -1,4 +1,3 @@
-
 // ignore_for_file: camel_case_types
 
 import 'dart:async';
@@ -16,7 +15,8 @@ typedef KeccakInstance = HashPointer;
 
 // stateSize and paddingByte are ignored here and set during initialize
 HashPointer create({int stateSize = 256 >> 3, int paddingByte = 0x1f}) {
-  final Pointer<Keccak_HashInstance> instance = ffi.calloc<Keccak_HashInstance>(sizeOf<Keccak_HashInstance>());
+  final Pointer<Keccak_HashInstance> instance =
+      ffi.calloc<Keccak_HashInstance>(sizeOf<Keccak_HashInstance>());
   return instance;
 }
 
@@ -33,7 +33,8 @@ void initialize(
   int hashBitLen,
   int delimitedSuffix,
 ) {
-  final HashReturn result = _bindings.Keccak_HashInitialize(instance, rate, capacity, hashBitLen, delimitedSuffix);
+  final HashReturn result = _bindings.Keccak_HashInitialize(
+      instance, rate, capacity, hashBitLen, delimitedSuffix);
   if (result != HashReturn.KECCAK_SUCCESS) {
     throw Exception('failed to initialize');
   }
@@ -48,7 +49,8 @@ void absorb(
   final Uint8List typedList = buffer.asTypedList(length);
   typedList.setAll(0, data);
 
-  final HashReturn result = _bindings.Keccak_HashUpdate(instance, buffer, length * 8);
+  final HashReturn result =
+      _bindings.Keccak_HashUpdate(instance, buffer, length * 8);
   ffi.calloc.free(buffer);
   if (result != HashReturn.KECCAK_SUCCESS) {
     throw Exception('failed to absorb');
@@ -61,9 +63,11 @@ Uint8List squeeze(
 ) {
   final Pointer<Uint8> buffer = ffi.calloc<Uint8>(bytesToSqueeze);
 
-  final HashReturn result = _bindings.Keccak_HashSqueeze(instance, buffer, bytesToSqueeze * 8);
+  final HashReturn result =
+      _bindings.Keccak_HashSqueeze(instance, buffer, bytesToSqueeze * 8);
 
-  final Uint8List output = Uint8List.fromList(buffer.asTypedList(bytesToSqueeze));
+  final Uint8List output =
+      Uint8List.fromList(buffer.asTypedList(bytesToSqueeze));
   ffi.calloc.free(buffer);
 
   if (result != HashReturn.KECCAK_SUCCESS) {
@@ -75,14 +79,15 @@ Uint8List squeeze(
 
 Uint8List sha3_512(Uint8List data) {
   final length = data.length;
-  
+
   final Pointer<Uint8> inputBuffer = ffi.calloc<Uint8>(length);
   final Uint8List typedList = inputBuffer.asTypedList(length);
   typedList.setAll(0, data);
 
   final Pointer<Uint8> outputBuffer = ffi.calloc<Uint8>(64);
 
-  final result = _bindings.SHA3_512(outputBuffer as Pointer<UnsignedChar>, inputBuffer as Pointer<UnsignedChar>, length);
+  final result = _bindings.SHA3_512(outputBuffer as Pointer<UnsignedChar>,
+      inputBuffer as Pointer<UnsignedChar>, length);
 
   final Uint8List output = Uint8List.fromList(outputBuffer.asTypedList(64));
   ffi.calloc.free(inputBuffer);
@@ -108,22 +113,18 @@ Future<void> absorbAsync(
   return completer.future;
 }
 
-Future<Uint8List> squeezeAsync(
-  HashPointer instance,
-  int bytesToSqueeze
-) async {
+Future<Uint8List> squeezeAsync(HashPointer instance, int bytesToSqueeze) async {
   final SendPort helperIsolateSendPort = await _helperIsolateSendPort;
   final int requestId = _nextSqueezeRequest++;
-  final _SqueezeRequest request = _SqueezeRequest(requestId, instance, bytesToSqueeze);
+  final _SqueezeRequest request =
+      _SqueezeRequest(requestId, instance, bytesToSqueeze);
   final Completer<Uint8List> completer = Completer<Uint8List>();
   _squeezeRequests[requestId] = completer;
   helperIsolateSendPort.send(request);
   return completer.future;
 }
 
-Future<Uint8List> sha3_512Async(
-  Uint8List data
-) async {
+Future<Uint8List> sha3_512Async(Uint8List data) async {
   final SendPort helperIsolateSendPort = await _helperIsolateSendPort;
   final int requestId = _nextSHA3_512Request++;
   final _SHA3_512Request request = _SHA3_512Request(requestId, data);
@@ -200,7 +201,6 @@ class _SHA3_512Response {
   const _SHA3_512Response(this.id, this.bytes);
 }
 
-
 /// Counters
 int _nextAbsorbRequest = 0;
 int _nextSqueezeRequest = 0;
@@ -208,9 +208,10 @@ int _nextSHA3_512Request = 0;
 
 /// Mappings
 final Map<int, Completer<void>> _absorbRequests = <int, Completer<void>>{};
-final Map<int, Completer<Uint8List>> _squeezeRequests = <int, Completer<Uint8List>>{};
-final Map<int, Completer<Uint8List>> _sha3_512Requests = <int, Completer<Uint8List>>{};
-
+final Map<int, Completer<Uint8List>> _squeezeRequests =
+    <int, Completer<Uint8List>>{};
+final Map<int, Completer<Uint8List>> _sha3_512Requests =
+    <int, Completer<Uint8List>>{};
 
 /// The SendPort belonging to the helper isolate.
 Future<SendPort> _helperIsolateSendPort = () async {
@@ -257,7 +258,6 @@ Future<SendPort> _helperIsolateSendPort = () async {
   await Isolate.spawn((SendPort sendPort) async {
     final ReceivePort helperReceivePort = ReceivePort()
       ..listen((dynamic data) {
-
         if (data is _AbsorbRequest) {
           absorb(data.instance, data.data);
           final _AbsorbResponse response = _AbsorbResponse(data.id);
