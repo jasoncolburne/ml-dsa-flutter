@@ -12,9 +12,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: subosito/flutter-action@v2
-    - run: |
+    - name: Pub Get
+      run: |
         cd example
         flutter pub get
-    - run: |
+    - name: Test
+      run: |
         cd example
-        flutter test -d linux integration_test/*
+        CMAKE_CXX_COMPILER=cc flutter test -d linux integration_test/*
