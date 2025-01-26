@@ -15,6 +15,14 @@ some of the squeezing operations.
 
 Check the [example app](./example/README.md).
 
+Generally, you probably want to use the `async.dart` extension and the `Async()`
+functions everywhere but web.
+
+For web, you can create a service worker capable of performing these operations
+asynchronously to achieve the same effect.
+
+These patterns are demonstrated in the example app.
+
 ## Performance
 
 Performance should be comparable to `ml-dsa-dart` on most platforms, but web will be
