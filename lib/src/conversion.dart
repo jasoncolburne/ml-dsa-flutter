@@ -216,7 +216,6 @@ Uint8List skEncode(
   return sk;
 }
 
-// this function uses named returns, brace yourself
 (
   Uint8List,
   Uint8List,
