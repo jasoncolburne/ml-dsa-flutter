@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - keccak (1.0.0):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - keccak (from `.symlinks/plugins/keccak/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  keccak:
+    :path: ".symlinks/plugins/keccak/ios"
+
+SPEC CHECKSUMS:
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  keccak: c16b87eee34ff21bcb5596f6f3e5cd01ac9437b3
+
+PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
+
+COCOAPODS: 1.16.2

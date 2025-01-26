@@ -1,0 +1,24 @@
+name: keccak_example
+description: "Demonstrates how to use the keccak plugin."
+version: 1.0.0+1
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+environment:
+  sdk: ^3.6.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  keccak:
+    path: ../
+  service_worker: ^0.4.0
+
+dev_dependencies:
+  build_config: ^1.1.2
+  build_runner: ^2.4.14
+  build_web_compilers: ^4.1.1
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

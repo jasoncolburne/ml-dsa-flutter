@@ -1,0 +1,27 @@
+name: ml_dsa_example
+description: "Demonstrates how to use ml_dsa."
+version: 1.0.0+1
+publish_to: 'none'
+
+environment:
+  sdk: ^3.6.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  ml_dsa:
+    path: ../
+  hex: ^0.2.0
+  service_worker: ^0.4.0
+
+dev_dependencies:
+  integration_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_config: ^1.1.2
+  build_runner: ^2.4.14
+  build_web_compilers: ^4.1.1
+
+flutter:
+  uses-material-design: true
