@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,7 +14,44 @@ Future<bool> testRoundtrip(int strength) async {
 
   final sig = await MLDSASWClient.sign(strength, sk, msg, ctx);
 
-  return await MLDSASWClient.verify(strength, pk, msg, sig, ctx);
+  if (!await MLDSASWClient.verify(strength, pk, msg, sig, ctx)) {
+    print("verification FAILED");
+    return false;
+  }
+
+  final Uint8List pkPrime = mutate(pk);
+  final Uint8List msgPrime = mutate(msg);
+  final Uint8List sigPrime = mutate(sig);
+  final Uint8List ctxPrime = mutate(ctx);
+
+  if (await MLDSASWClient.verify(strength, pkPrime, msg, sig, ctx)) {
+    print("verification SUCCEEDED incorrectly for a mutated pk");
+    return false;
+  }
+
+  if (await MLDSASWClient.verify(strength, pk, msgPrime, sig, ctx)) {
+    print("verification SUCCEEDED incorrectly for a mutated message");
+    return false;
+  }
+
+  if (await MLDSASWClient.verify(strength, pk, msg, sigPrime, ctx)) {
+    print("verification SUCCEEDED incorrectly for a mutated signature");
+    return false;
+  }
+
+  if (await MLDSASWClient.verify(strength, pk, msg, sig, ctxPrime)) {
+    print("verification SUCCEEDED incorrectly for a mutated context");
+    return false;
+  }
+
+  return true;
+}
+
+Uint8List mutate(Uint8List input) {
+  final data = Uint8List.fromList(input);
+  final offset = Random.secure().nextInt(data.length);
+  data[offset] ^= 0x01;
+  return data;
 }
 
 void main() async {

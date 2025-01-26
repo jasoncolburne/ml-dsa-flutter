@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,7 +16,44 @@ Future<bool> testRoundtrip(ParameterSet params) async {
 
   final sig = await dsa.signAsync(sk, msg, ctx);
 
-  return await dsa.verifyAsync(pk, msg, sig, ctx);
+  if (!await dsa.verifyAsync(pk, msg, sig, ctx)) {
+    print("verification FAILED");
+    return false;
+  }
+
+  final Uint8List pkPrime = mutate(pk);
+  final Uint8List msgPrime = mutate(msg);
+  final Uint8List sigPrime = mutate(sig);
+  final Uint8List ctxPrime = mutate(ctx);
+
+  if (await dsa.verifyAsync(pkPrime, msg, sig, ctx)) {
+    print("verification SUCCEEDED incorrectly for a mutated pk");
+    return false;
+  }
+
+  if (await dsa.verifyAsync(pk, msgPrime, sig, ctx)) {
+    print("verification SUCCEEDED incorrectly for a mutated message");
+    return false;
+  }
+
+  if (await dsa.verifyAsync(pk, msg, sigPrime, ctx)) {
+    print("verification SUCCEEDED incorrectly for a mutated signature");
+    return false;
+  }
+
+  if (await dsa.verifyAsync(pk, msg, sig, ctxPrime)) {
+    print("verification SUCCEEDED incorrectly for a mutated context");
+    return false;
+  }
+
+  return true;
+}
+
+Uint8List mutate(Uint8List input) {
+  final data = Uint8List.fromList(input);
+  final offset = Random.secure().nextInt(data.length);
+  data[offset] ^= 0x01;
+  return data;
 }
 
 void main() {
