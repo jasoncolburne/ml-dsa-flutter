@@ -21,7 +21,7 @@ functions everywhere but web.
 For web, you can create a service worker capable of performing these operations
 asynchronously to achieve the same effect.
 
-These patterns are demonstrated in the example app.
+These patterns are demonstrated in the example directory.
 
 ## Performance
 
