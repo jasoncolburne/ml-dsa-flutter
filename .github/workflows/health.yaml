@@ -13,7 +13,7 @@ jobs:
     - name: Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install build-essentials
+        sudo apt-get install build-essential
     - uses: actions/checkout@v4
     - uses: subosito/flutter-action@v2
     - name: Pub Get
