@@ -1,6 +1,6 @@
 name: keccak
 description: "The Keccak Algorithm"
-version: 0.1.0+1
+version: 1.0.0+1
 homepage: https://github.com/jasoncolburne/ml-dsa-flutter/modules/keccak
 
 environment:

@@ -1,6 +1,6 @@
 name: ml_dsa_example
 description: "Demonstrates how to use ml_dsa."
-version: 0.0.1+1
+version: 1.0.0+1
 publish_to: 'none'
 
 environment:

@@ -1,8 +1,7 @@
 name: keccak_example
 description: "Demonstrates how to use the keccak plugin."
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-
 version: 1.0.0+1
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
   sdk: ^3.6.1

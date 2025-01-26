@@ -350,7 +350,7 @@ packages:
       path: "../plugins/keccak"
       relative: true
     source: path
-    version: "0.1.0+1"
+    version: "1.0.0+1"
   leak_tracker:
     dependency: transitive
     description:
@@ -437,7 +437,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.1.0+1"
+    version: "1.0.0+1"
   package_config:
     dependency: transitive
     description:
