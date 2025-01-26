@@ -4,14 +4,14 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'keccak'
-  s.version          = '0.1.0'
+  s.version          = '1.0.0'
   s.summary          = 'The Keccak hash algorithm.'
   s.description      = <<-DESC
 The Keccak hash algorithm.
                        DESC
   s.homepage         = 'http://github.com/jasoncolburne/ml-dsa-flutter/modules/keccak'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Jason Colburne' => 'xxx@xxx.xx' }
+  s.author           = { 'Jason Colburne' => 'email@example.com' }
 
   # This will ensure the source files in Classes/ are included in the native
   # builds of apps using this FFI plugin. Podspec does not support relative
