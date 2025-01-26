@@ -10,6 +10,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+    - name: Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install build-essentials
     - uses: actions/checkout@v4
     - uses: subosito/flutter-action@v2
     - name: Pub Get
@@ -19,4 +23,4 @@ jobs:
     - name: Test
       run: |
         cd example
-        CMAKE_CXX_COMPILER=cc flutter test -d linux integration_test/*
+        flutter test -d linux integration_test/*
