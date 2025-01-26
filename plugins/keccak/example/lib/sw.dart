@@ -5,7 +5,8 @@ import 'package:service_worker/worker.dart';
 import 'package:keccak/keccak.dart' as keccak;
 
 int _nextKeccakInstance = 0;
-final Map<int, keccak.KeccakInstance> _keccakInstances = <int, keccak.KeccakInstance>{};
+final Map<int, keccak.KeccakInstance> _keccakInstances =
+    <int, keccak.KeccakInstance>{};
 
 void main(List<String> args) {
   onMessage.listen((event) {
@@ -17,7 +18,11 @@ void main(List<String> args) {
 
       _keccakInstances[instanceId] = instance;
 
-      final data = {'id': parsedData['id'], 'type': 'createResponse', 'instance': instanceId};
+      final data = {
+        'id': parsedData['id'],
+        'type': 'createResponse',
+        'instance': instanceId
+      };
       event.source.postMessage(json.encode(data));
     }
 
@@ -62,7 +67,11 @@ void main(List<String> args) {
         parsedData['bytesToSqueeze'],
       );
 
-      final data = {'id': parsedData['id'], 'type': 'squeezeResponse', 'bytes': base64.encode(bytes)};
+      final data = {
+        'id': parsedData['id'],
+        'type': 'squeezeResponse',
+        'bytes': base64.encode(bytes)
+      };
       event.source.postMessage(json.encode(data));
     }
 
@@ -71,7 +80,11 @@ void main(List<String> args) {
         Uint8List.fromList(base64.decode(parsedData['message'])),
       );
 
-      final data = {'id': parsedData['id'], 'type': 'sha3512Response', 'bytes': base64.encode(bytes)};
+      final data = {
+        'id': parsedData['id'],
+        'type': 'sha3512Response',
+        'bytes': base64.encode(bytes)
+      };
       event.source.postMessage(json.encode(data));
     }
   });
