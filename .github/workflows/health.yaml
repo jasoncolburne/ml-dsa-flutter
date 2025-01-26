@@ -18,8 +18,8 @@ jobs:
       run: |
         cd example
         flutter pub get
-    - name: Setup Android emulator
+    - name: Test
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 29
-        script: flutter test integration_test/*
+        script: cd example && flutter test integration_test/*
