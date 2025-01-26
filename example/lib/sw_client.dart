@@ -4,11 +4,12 @@ import 'dart:typed_data';
 
 import 'package:service_worker/window.dart' as sw;
 
-void request(sw.ServiceWorker worker, int id, int strength, String type, Map<String, dynamic> data) {
-    data['id'] = id;
-    data['strength'] = strength;
-    data['type'] = '${type}Request';
-    worker.postMessage(json.encode(data));
+void request(sw.ServiceWorker worker, int id, int strength, String type,
+    Map<String, dynamic> data) {
+  data['id'] = id;
+  data['strength'] = strength;
+  data['type'] = '${type}Request';
+  worker.postMessage(json.encode(data));
 }
 
 class MLDSASWClient {
@@ -32,7 +33,8 @@ class MLDSASWClient {
         Completer<(Uint8List, Uint8List)>();
     _keyGenRequests[requestId] = completer;
 
-    request(serviceWorkerRegistration.active!, requestId, strength, 'keyGen', {});
+    request(
+        serviceWorkerRegistration.active!, requestId, strength, 'keyGen', {});
 
     return completer.future;
   }
@@ -44,7 +46,8 @@ class MLDSASWClient {
         Completer<(Uint8List, Uint8List)>();
     _keyGenWithSeedRequests[requestId] = completer;
 
-    request(serviceWorkerRegistration.active!, requestId, strength, 'keyGenWithSeed', {
+    request(serviceWorkerRegistration.active!, requestId, strength,
+        'keyGenWithSeed', {
       'seed': base64.encode(seed),
     });
 
@@ -72,7 +75,8 @@ class MLDSASWClient {
     final Completer<Uint8List> completer = Completer<Uint8List>();
     _signDeterministicallyRequests[requestId] = completer;
 
-    request(serviceWorkerRegistration.active!, requestId, strength, 'signDeterministically', {
+    request(serviceWorkerRegistration.active!, requestId, strength,
+        'signDeterministically', {
       'sk': base64.encode(sk),
       'message': base64.encode(message),
       'ctx': base64.encode(ctx),

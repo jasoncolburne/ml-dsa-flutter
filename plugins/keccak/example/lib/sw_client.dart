@@ -4,10 +4,11 @@ import 'dart:typed_data';
 
 import 'package:service_worker/window.dart' as sw;
 
-void request(sw.ServiceWorker worker, int id, String type, Map<String, dynamic> data) {
-    data['id'] = id;
-    data['type'] = '${type}Request';
-    worker.postMessage(json.encode(data));
+void request(
+    sw.ServiceWorker worker, int id, String type, Map<String, dynamic> data) {
+  data['id'] = id;
+  data['type'] = '${type}Request';
+  worker.postMessage(json.encode(data));
 }
 
 class KeccakSWClient {

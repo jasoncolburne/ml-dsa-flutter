@@ -16,7 +16,8 @@ void main(List<String> args) {
       }
     }
 
-    void respond(ServiceWorkerClient source, String type, Map<String, dynamic> data) {
+    void respond(
+        ServiceWorkerClient source, String type, Map<String, dynamic> data) {
       data['type'] = '${type}Response';
       data['id'] = parsedData['id'];
       source.postMessage(json.encode(data));
@@ -82,9 +83,7 @@ void main(List<String> args) {
         base64.decode(parsedData['ctx']),
       );
 
-      respond(event.source, 'verify', {
-        'valid': valid
-      });
+      respond(event.source, 'verify', {'valid': valid});
     });
   });
 }

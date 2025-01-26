@@ -18,7 +18,8 @@ void main(List<String> args) {
       }
     }
 
-    void respond(ServiceWorkerClient source, String type, Map<String, dynamic> data) {
+    void respond(
+        ServiceWorkerClient source, String type, Map<String, dynamic> data) {
       data['type'] = '${type}Response';
       data['id'] = parsedData['id'];
       source.postMessage(json.encode(data));
@@ -30,9 +31,7 @@ void main(List<String> args) {
 
       _keccakInstances[instanceId] = instance;
 
-      respond(event.source, 'create', {
-        'instance': instanceId
-      });
+      respond(event.source, 'create', {'instance': instanceId});
     });
 
     handle('free', () {
@@ -73,9 +72,7 @@ void main(List<String> args) {
         parsedData['bytesToSqueeze'],
       );
 
-      respond(event.source, 'squeeze', {
-        'bytes': base64.encode(bytes)
-      });
+      respond(event.source, 'squeeze', {'bytes': base64.encode(bytes)});
     });
 
     handle('sha3512', () {
@@ -83,9 +80,7 @@ void main(List<String> args) {
         Uint8List.fromList(base64.decode(parsedData['message'])),
       );
 
-      respond(event.source, 'sha3512', {
-        'bytes': base64.encode(bytes)
-      });
+      respond(event.source, 'sha3512', {'bytes': base64.encode(bytes)});
     });
   });
 }
