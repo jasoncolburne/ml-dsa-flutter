@@ -2,51 +2,50 @@
 
 Demonstrates how to use the ml_dsa package.
 
-## testing
+## Sample apps
 
-`flutter test` doesn't build the keccak library. One can run all the tests with
-`flutter run` for now.
-
-### Known Answer Tests
-
-```
-flutter run integration_test/integration_test.dart
-```
-
-or, for web:
-
-```
-make debug-worker
-flutter run -d chrome integration_test/web.dart
-```
-
-### Round-Trip Tests
-
-```
-flutter run test/ml_dsa_test.dart
-```
-
-or, for web:
-
-```
-make debug-worker
-flutter run -d chrome test/web.dart
-```
-
-### Interactive app
-
-A test app is also available,
+Mobile:
 
 ```
 flutter run lib/main.dart
 ```
 
-or 
+Web:
 
 ```
 make debug-worker
 flutter run -d chrome lib/web.dart
 ```
+
+## Testing
+
+To run all integration tests for non-web platforms:
+
+```
+flutter test integration_test/*
+```
+
+## Web Tests
+
+The same integration tests exist for web, and are found in the `/web_test` directory.
+
+### Known Answer Tests
+
+```
+make debug-worker
+flutter run -d chrome web_test/kat.dart
+```
+
+### Round-Trip Tests
+
+```
+make debug-worker
+flutter run -d chrome web_test/roundtrip.dart
+```
+
+## Service worker
+
+Examples above use the `debug-worker` make target, which is undesired in production.
 
 You can also build a `release-worker` which is minified and optimized:
 
