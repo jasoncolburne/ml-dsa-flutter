@@ -4,6 +4,13 @@ import 'dart:typed_data';
 
 import 'package:service_worker/window.dart' as sw;
 
+void request(sw.ServiceWorker worker, int id, int strength, String type, Map<String, dynamic> data) {
+    data['id'] = id;
+    data['strength'] = strength;
+    data['type'] = '${type}Request';
+    worker.postMessage(json.encode(data));
+}
+
 class MLDSASWClient {
   static Future<void> initialize() async {
     if (sw.isSupported) {
@@ -25,11 +32,7 @@ class MLDSASWClient {
         Completer<(Uint8List, Uint8List)>();
     _keyGenRequests[requestId] = completer;
 
-    serviceWorkerRegistration.active!.postMessage(json.encode({
-      'id': requestId,
-      'strength': strength,
-      'type': 'keyGenRequest',
-    }));
+    request(serviceWorkerRegistration.active!, requestId, strength, 'keyGen', {});
 
     return completer.future;
   }
@@ -41,12 +44,9 @@ class MLDSASWClient {
         Completer<(Uint8List, Uint8List)>();
     _keyGenWithSeedRequests[requestId] = completer;
 
-    serviceWorkerRegistration.active!.postMessage(json.encode({
-      'id': requestId,
-      'strength': strength,
-      'type': 'keyGenWithSeedRequest',
+    request(serviceWorkerRegistration.active!, requestId, strength, 'keyGenWithSeed', {
       'seed': base64.encode(seed),
-    }));
+    });
 
     return completer.future;
   }
@@ -57,14 +57,11 @@ class MLDSASWClient {
     final Completer<Uint8List> completer = Completer<Uint8List>();
     _signRequests[requestId] = completer;
 
-    serviceWorkerRegistration.active!.postMessage(json.encode({
-      'id': requestId,
-      'strength': strength,
-      'type': 'signRequest',
+    request(serviceWorkerRegistration.active!, requestId, strength, 'sign', {
       'sk': base64.encode(sk),
       'message': base64.encode(message),
       'ctx': base64.encode(ctx),
-    }));
+    });
 
     return completer.future;
   }
@@ -75,14 +72,11 @@ class MLDSASWClient {
     final Completer<Uint8List> completer = Completer<Uint8List>();
     _signDeterministicallyRequests[requestId] = completer;
 
-    serviceWorkerRegistration.active!.postMessage(json.encode({
-      'id': requestId,
-      'strength': strength,
-      'type': 'signDeterministicallyRequest',
+    request(serviceWorkerRegistration.active!, requestId, strength, 'signDeterministically', {
       'sk': base64.encode(sk),
       'message': base64.encode(message),
       'ctx': base64.encode(ctx),
-    }));
+    });
 
     return completer.future;
   }
@@ -93,15 +87,12 @@ class MLDSASWClient {
     final Completer<bool> completer = Completer<bool>();
     _verifyRequests[requestId] = completer;
 
-    serviceWorkerRegistration.active!.postMessage(json.encode({
-      'id': requestId,
-      'strength': strength,
-      'type': 'verifyRequest',
+    request(serviceWorkerRegistration.active!, requestId, strength, 'verify', {
       'pk': base64.encode(pk),
       'message': base64.encode(message),
       'sig': base64.encode(sig),
       'ctx': base64.encode(ctx),
-    }));
+    });
 
     return completer.future;
   }
@@ -128,43 +119,44 @@ final Map<int, Completer<bool>> _verifyRequests = <int, Completer<bool>>{};
 void responseListener(sw.MessageEvent event) {
   final parsedData = json.decode(event.data);
 
-  if (parsedData['type'] == 'keyGenResponse') {
+  void handle(String type, Function() handler) {
+    if (parsedData['type'] == '${type}Response') {
+      handler();
+    }
+  }
+
+  handle('keyGen', () {
     final Completer<(Uint8List, Uint8List)> completer =
         _keyGenRequests[parsedData['id']]!;
     _keyGenRequests.remove(parsedData['id']);
     completer.complete(
         (base64.decode(parsedData['pk']), base64.decode(parsedData['sk'])));
-    return;
-  }
+  });
 
-  if (parsedData['type'] == 'keyGenWithSeedResponse') {
+  handle('keyGenWithSeed', () {
     final Completer<(Uint8List, Uint8List)> completer =
         _keyGenWithSeedRequests[parsedData['id']]!;
     _keyGenWithSeedRequests.remove(parsedData['id']);
     completer.complete(
         (base64.decode(parsedData['pk']), base64.decode(parsedData['sk'])));
-    return;
-  }
+  });
 
-  if (parsedData['type'] == 'signResponse') {
+  handle('sign', () {
     final Completer<Uint8List> completer = _signRequests[parsedData['id']]!;
     _signRequests.remove(parsedData['id']);
     completer.complete(base64.decode(parsedData['sig']));
-    return;
-  }
+  });
 
-  if (parsedData['type'] == 'signDeterministicallyResponse') {
+  handle('signDeterministically', () {
     final Completer<Uint8List> completer =
         _signDeterministicallyRequests[parsedData['id']]!;
     _signDeterministicallyRequests.remove(parsedData['id']);
     completer.complete(base64.decode(parsedData['sig']));
-    return;
-  }
+  });
 
-  if (parsedData['type'] == 'verifyResponse') {
+  handle('verify', () {
     final Completer<bool> completer = _verifyRequests[parsedData['id']]!;
     _verifyRequests.remove(parsedData['id']);
     completer.complete(parsedData['valid']);
-    return;
-  }
+  });
 }

@@ -10,6 +10,12 @@ void main(List<String> args) {
 
     final strength = parsedData['strength'];
 
+    void respond(ServiceWorkerClient source, String type, Map<String, dynamic> data) {
+      data['type'] = '${type}Response';
+      data['id'] = parsedData['id'];
+      source.postMessage(json.encode(data));
+    }
+
     if (strength == 44) {
       dsa = MLDSA(MLDSA44Parameters());
     } else if (strength == 65) {
@@ -23,25 +29,19 @@ void main(List<String> args) {
     if (parsedData['type'] == 'keyGenRequest') {
       final (pk, sk) = dsa.keyGen();
 
-      final data = {
-        'id': parsedData['id'],
-        'type': 'keyGenResponse',
+      respond(event.source, 'keyGen', {
         'pk': base64.encode(pk),
         'sk': base64.encode(sk),
-      };
-      event.source.postMessage(json.encode(data));
+      });
     }
 
     if (parsedData['type'] == 'keyGenWithSeedRequest') {
       final (pk, sk) = dsa.keyGenWithSeed(base64.decode(parsedData['seed']));
 
-      final data = {
-        'id': parsedData['id'],
-        'type': 'keyGenWithSeedResponse',
+      respond(event.source, 'keyGenWithSeed', {
         'pk': base64.encode(pk),
         'sk': base64.encode(sk),
-      };
-      event.source.postMessage(json.encode(data));
+      });
     }
 
     if (parsedData['type'] == 'signRequest') {
@@ -51,12 +51,9 @@ void main(List<String> args) {
         base64.decode(parsedData['ctx']),
       );
 
-      final data = {
-        'id': parsedData['id'],
-        'type': 'signResponse',
+      respond(event.source, 'sign', {
         'sig': base64.encode(sig),
-      };
-      event.source.postMessage(json.encode(data));
+      });
     }
 
     if (parsedData['type'] == 'signDeterministicallyRequest') {
@@ -66,12 +63,9 @@ void main(List<String> args) {
         base64.decode(parsedData['ctx']),
       );
 
-      final data = {
-        'id': parsedData['id'],
-        'type': 'signDeterministicallyResponse',
+      respond(event.source, 'signDeterministically', {
         'sig': base64.encode(sig),
-      };
-      event.source.postMessage(json.encode(data));
+      });
     }
 
     if (parsedData['type'] == 'verifyRequest') {
@@ -82,12 +76,9 @@ void main(List<String> args) {
         base64.decode(parsedData['ctx']),
       );
 
-      final data = {
-        'id': parsedData['id'],
-        'type': 'verifyResponse',
+      respond(event.source, 'verify', {
         'valid': valid
-      };
-      event.source.postMessage(json.encode(data));
+      });
     }
   });
 }
