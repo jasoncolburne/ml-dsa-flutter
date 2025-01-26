@@ -16,7 +16,7 @@ flutter run integration_test/integration_test.dart
 or, for web:
 
 ```
-make service-worker
+make debug-worker
 flutter run -d chrome integration_test/web.dart
 ```
 
@@ -29,7 +29,7 @@ flutter run test/ml_dsa_test.dart
 or, for web:
 
 ```
-make service-worker
+make debug-worker
 flutter run -d chrome test/web.dart
 ```
 
@@ -44,6 +44,12 @@ flutter run lib/main.dart
 or 
 
 ```
-make service-worker
+make debug-worker
 flutter run -d chrome lib/web.dart
+```
+
+You can also build a `release-worker` which is minified and optimized:
+
+```
+make release-worker
 ```

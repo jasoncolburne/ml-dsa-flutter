@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:keccak/keccak.dart' as keccak;
@@ -56,12 +56,10 @@ class _MyAppState extends State<MyApp> {
     const textStyle = TextStyle(fontSize: 25);
     const spacerSmall = SizedBox(height: 10);
 
-    const title = kIsWeb ? 'Web Implementation' : 'Native packages';
-    const description = kIsWeb
-        ? 'This calls a web limplementation using 32-bit operations '
-            'to emulate 64-bit ones.'
-        : 'This calls a native function through FFI that is shipped as source in the package. '
-            'The native code is built as part of the Flutter Runner build.';
+    const title = 'Native packages';
+    const description =
+        'This calls a native function through FFI that is shipped as source in the package. '
+        'The native code is built as part of the Flutter Runner build.';
 
     return MaterialApp(
       home: Scaffold(

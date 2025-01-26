@@ -142,7 +142,8 @@ class _CryptoWidgetState extends State<CryptoWidget> {
             final msg = utf8.encode(_messageController.text);
             final ctx = utf8.encode(_contextController.text);
 
-            final result = await MLDSASWClient.verify(_strength, _pk, msg, _sig, ctx);
+            final result =
+                await MLDSASWClient.verify(_strength, _pk, msg, _sig, ctx);
 
             SnackBar snackbar;
             if (result) {

@@ -21,7 +21,8 @@ class MLDSASWClient {
 
   static Future<(Uint8List, Uint8List)> keyGen(int strength) async {
     final int requestId = _nextKeyGenRequest++;
-    final Completer<(Uint8List, Uint8List)> completer = Completer<(Uint8List, Uint8List)>();
+    final Completer<(Uint8List, Uint8List)> completer =
+        Completer<(Uint8List, Uint8List)>();
     _keyGenRequests[requestId] = completer;
 
     serviceWorkerRegistration.active!.postMessage(json.encode({
@@ -33,9 +34,11 @@ class MLDSASWClient {
     return completer.future;
   }
 
-  static Future<(Uint8List, Uint8List)> keyGenWithSeed(int strength, Uint8List seed) async {
+  static Future<(Uint8List, Uint8List)> keyGenWithSeed(
+      int strength, Uint8List seed) async {
     final int requestId = _nextKeyGenWithSeedRequest++;
-    final Completer<(Uint8List, Uint8List)> completer = Completer<(Uint8List, Uint8List)>();
+    final Completer<(Uint8List, Uint8List)> completer =
+        Completer<(Uint8List, Uint8List)>();
     _keyGenWithSeedRequests[requestId] = completer;
 
     serviceWorkerRegistration.active!.postMessage(json.encode({
@@ -48,7 +51,8 @@ class MLDSASWClient {
     return completer.future;
   }
 
-  static Future<Uint8List> sign(int strength, Uint8List sk, Uint8List message, Uint8List ctx) async {
+  static Future<Uint8List> sign(
+      int strength, Uint8List sk, Uint8List message, Uint8List ctx) async {
     final int requestId = _nextSignRequest++;
     final Completer<Uint8List> completer = Completer<Uint8List>();
     _signRequests[requestId] = completer;
@@ -65,7 +69,8 @@ class MLDSASWClient {
     return completer.future;
   }
 
-  static Future<Uint8List> signDeterministically(int strength, Uint8List sk, Uint8List message, Uint8List ctx) async {
+  static Future<Uint8List> signDeterministically(
+      int strength, Uint8List sk, Uint8List message, Uint8List ctx) async {
     final int requestId = _nextSignDeterministicallyRequest++;
     final Completer<Uint8List> completer = Completer<Uint8List>();
     _signDeterministicallyRequests[requestId] = completer;
@@ -82,7 +87,8 @@ class MLDSASWClient {
     return completer.future;
   }
 
-  static Future<bool> verify(int strength, Uint8List pk, Uint8List message, Uint8List sig, Uint8List ctx) async {
+  static Future<bool> verify(int strength, Uint8List pk, Uint8List message,
+      Uint8List sig, Uint8List ctx) async {
     final int requestId = _nextVerifyRequest++;
     final Completer<bool> completer = Completer<bool>();
     _verifyRequests[requestId] = completer;
@@ -109,27 +115,34 @@ int _nextSignRequest = 0;
 int _nextSignDeterministicallyRequest = 0;
 int _nextVerifyRequest = 0;
 
-final Map<int, Completer<(Uint8List, Uint8List)>> _keyGenRequests = <int, Completer<(Uint8List, Uint8List)>>{};
-final Map<int, Completer<(Uint8List, Uint8List)>> _keyGenWithSeedRequests = <int, Completer<(Uint8List, Uint8List)>>{};
-final Map<int, Completer<Uint8List>> _signRequests = <int, Completer<Uint8List>>{};
-final Map<int, Completer<Uint8List>> _signDeterministicallyRequests = <int, Completer<Uint8List>>{};
-final Map<int, Completer<bool>> _verifyRequests =
-    <int, Completer<bool>>{};
+final Map<int, Completer<(Uint8List, Uint8List)>> _keyGenRequests =
+    <int, Completer<(Uint8List, Uint8List)>>{};
+final Map<int, Completer<(Uint8List, Uint8List)>> _keyGenWithSeedRequests =
+    <int, Completer<(Uint8List, Uint8List)>>{};
+final Map<int, Completer<Uint8List>> _signRequests =
+    <int, Completer<Uint8List>>{};
+final Map<int, Completer<Uint8List>> _signDeterministicallyRequests =
+    <int, Completer<Uint8List>>{};
+final Map<int, Completer<bool>> _verifyRequests = <int, Completer<bool>>{};
 
 void responseListener(sw.MessageEvent event) {
   final parsedData = json.decode(event.data);
 
   if (parsedData['type'] == 'keyGenResponse') {
-    final Completer<(Uint8List, Uint8List)> completer = _keyGenRequests[parsedData['id']]!;
+    final Completer<(Uint8List, Uint8List)> completer =
+        _keyGenRequests[parsedData['id']]!;
     _keyGenRequests.remove(parsedData['id']);
-    completer.complete((base64.decode(parsedData['pk']), base64.decode(parsedData['sk'])));
+    completer.complete(
+        (base64.decode(parsedData['pk']), base64.decode(parsedData['sk'])));
     return;
   }
 
   if (parsedData['type'] == 'keyGenWithSeedResponse') {
-    final Completer<(Uint8List, Uint8List)> completer = _keyGenWithSeedRequests[parsedData['id']]!;
+    final Completer<(Uint8List, Uint8List)> completer =
+        _keyGenWithSeedRequests[parsedData['id']]!;
     _keyGenWithSeedRequests.remove(parsedData['id']);
-    completer.complete((base64.decode(parsedData['pk']), base64.decode(parsedData['sk'])));
+    completer.complete(
+        (base64.decode(parsedData['pk']), base64.decode(parsedData['sk'])));
     return;
   }
 
@@ -141,7 +154,8 @@ void responseListener(sw.MessageEvent event) {
   }
 
   if (parsedData['type'] == 'signDeterministicallyResponse') {
-    final Completer<Uint8List> completer = _signDeterministicallyRequests[parsedData['id']]!;
+    final Completer<Uint8List> completer =
+        _signDeterministicallyRequests[parsedData['id']]!;
     _signDeterministicallyRequests.remove(parsedData['id']);
     completer.complete(base64.decode(parsedData['sig']));
     return;
@@ -154,4 +168,3 @@ void responseListener(sw.MessageEvent event) {
     return;
   }
 }
-

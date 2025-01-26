@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
-import 'package:flutter/foundation.dart';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:hex/hex.dart';
 
@@ -35,7 +36,8 @@ Future<bool> testMLDSAKAT(
     final message = Uint8List.fromList(HEX.decode(vector['Message']!));
     final ctx = Uint8List.fromList(HEX.decode(vector['Context']!));
 
-    final sig = await MLDSASWClient.signDeterministically(strength, sk, message, ctx);
+    final sig =
+        await MLDSASWClient.signDeterministically(strength, sk, message, ctx);
     final Uint8List sm = Uint8List(sig.length + message.length);
     sm.setRange(0, sig.length, sig);
     sm.setRange(sig.length, sm.length, message);
@@ -75,24 +77,21 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     Future.microtask(() async {
-      final result44 =
-          await testMLDSAKAT(44, ML_DSA_44_TestVectors);
+      final result44 = await testMLDSAKAT(44, ML_DSA_44_TestVectors);
       setState(() {
         results['ML-DSA-44'] = result44;
       });
     });
 
     Future.microtask(() async {
-      final result65 =
-          await testMLDSAKAT(65, ML_DSA_65_TestVectors);
+      final result65 = await testMLDSAKAT(65, ML_DSA_65_TestVectors);
       setState(() {
         results['ML-DSA-65'] = result65;
       });
     });
 
     Future.microtask(() async {
-      final result87 =
-          await testMLDSAKAT(87, ML_DSA_87_TestVectors);
+      final result87 = await testMLDSAKAT(87, ML_DSA_87_TestVectors);
       setState(() {
         results['ML-DSA-87'] = result87;
       });

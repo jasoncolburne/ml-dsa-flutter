@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
-import 'package:flutter/foundation.dart';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:hex/hex.dart';
 
@@ -56,11 +57,6 @@ Future<bool> testMLDSAKAT(
 }
 
 void main() async {
-  if (kIsWeb) {
-    print(
-        'service worker not implemented on web, wait a while for results (a minute)');
-  }
-
   runApp(MyApp());
 }
 

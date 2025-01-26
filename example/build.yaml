@@ -6,3 +6,10 @@ targets:
           - lib/sw.dart
         options:
           compiler: dart2js
+        dev_options:
+          dart2js_args:
+            - --no-minify
+        release_options:
+          dart2js_args:
+            - --no-source-maps
+            - -O4

@@ -28,7 +28,7 @@ or, for web:
 
 ```
 cd example
-make service-worker
+make debug-worker
 flutter run -d chrome integration_test/web.dart
 ```
 
@@ -43,7 +43,7 @@ or, for web:
 
 ```
 cd example
-make service-worker
+make debug-worker
 flutter run -d chrome test/web.dart
 ```
 
@@ -60,8 +60,15 @@ or
 
 ```
 cd example
-make service-worker
+make debug-worker
 flutter run -d chrome lib/web.dart
+```
+
+You can also build a `release-worker` which is minified and optimized:
+
+```
+cd example
+make release-worker
 ```
 
 ## Performance
