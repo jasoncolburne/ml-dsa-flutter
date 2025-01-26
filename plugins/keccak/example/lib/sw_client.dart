@@ -4,6 +4,12 @@ import 'dart:typed_data';
 
 import 'package:service_worker/window.dart' as sw;
 
+void request(sw.ServiceWorker worker, int id, String type, Map<String, dynamic> data) {
+    data['id'] = id;
+    data['type'] = '${type}Request';
+    worker.postMessage(json.encode(data));
+}
+
 class KeccakSWClient {
   static Future<void> initialize() async {
     if (sw.isSupported) {
@@ -24,10 +30,7 @@ class KeccakSWClient {
     final Completer<int> completer = Completer<int>();
     _createRequests[requestId] = completer;
 
-    serviceWorkerRegistration.active!.postMessage(json.encode({
-      'id': requestId,
-      'type': 'createRequest',
-    }));
+    request(serviceWorkerRegistration.active!, requestId, 'create', {});
 
     return completer.future;
   }
@@ -37,11 +40,9 @@ class KeccakSWClient {
     final Completer<void> completer = Completer<void>();
     _freeRequests[requestId] = completer;
 
-    serviceWorkerRegistration.active!.postMessage(json.encode({
-      'id': requestId,
-      'type': 'freeRequest',
+    request(serviceWorkerRegistration.active!, requestId, 'free', {
       'instance': instance,
-    }));
+    });
 
     return completer.future;
   }
@@ -57,15 +58,13 @@ class KeccakSWClient {
     final Completer<void> completer = Completer<void>();
     _initializeRequests[requestId] = completer;
 
-    serviceWorkerRegistration.active!.postMessage(json.encode({
-      'id': requestId,
-      'type': 'initializeRequest',
+    request(serviceWorkerRegistration.active!, requestId, 'initialize', {
       'instance': instance,
       'rate': rate,
       'capacity': capacity,
       'hashBitLen': hashBitLen,
       'delimitedSuffix': delimitedSuffix,
-    }));
+    });
 
     return completer.future;
   }
@@ -75,12 +74,10 @@ class KeccakSWClient {
     final Completer<void> completer = Completer<void>();
     _absorbRequests[requestId] = completer;
 
-    serviceWorkerRegistration.active!.postMessage(json.encode({
-      'id': requestId,
-      'type': 'absorbRequest',
+    request(serviceWorkerRegistration.active!, requestId, 'absorb', {
       'instance': instance,
       'message': base64.encode(message),
-    }));
+    });
 
     return completer.future;
   }
@@ -90,12 +87,10 @@ class KeccakSWClient {
     final Completer<Uint8List> completer = Completer<Uint8List>();
     _squeezeRequests[requestId] = completer;
 
-    serviceWorkerRegistration.active!.postMessage(json.encode({
-      'id': requestId,
-      'type': 'squeezeRequest',
+    request(serviceWorkerRegistration.active!, requestId, 'squeeze', {
       'instance': instance,
       'bytesToSqueeze': bytesToSqueeze,
-    }));
+    });
 
     return completer.future;
   }
@@ -105,11 +100,9 @@ class KeccakSWClient {
     final Completer<Uint8List> completer = Completer<Uint8List>();
     _sha3_512Requests[requestId] = completer;
 
-    serviceWorkerRegistration.active!.postMessage(json.encode({
-      'id': requestId,
-      'type': 'sha3512Request',
+    request(serviceWorkerRegistration.active!, requestId, 'sha3512', {
       'message': base64.encode(message),
-    }));
+    });
 
     return completer.future;
   }
@@ -136,45 +129,45 @@ final Map<int, Completer<Uint8List>> _sha3_512Requests =
 void responseListener(sw.MessageEvent event) {
   final parsedData = json.decode(event.data);
 
-  if (parsedData['type'] == 'createResponse') {
+  void handle(String type, Function() handler) {
+    if (parsedData['type'] == '${type}Response') {
+      handler();
+    }
+  }
+
+  handle('create', () {
     final Completer<int> completer = _createRequests[parsedData['id']]!;
     _createRequests.remove(parsedData['id']);
     completer.complete(parsedData['instance']);
-    return;
-  }
+  });
 
-  if (parsedData['type'] == 'freeResponse') {
+  handle('free', () {
     final Completer<void> completer = _freeRequests[parsedData['id']]!;
     _freeRequests.remove(parsedData['id']);
     completer.complete();
-    return;
-  }
+  });
 
-  if (parsedData['type'] == 'initializeResponse') {
+  handle('initialize', () {
     final Completer<void> completer = _initializeRequests[parsedData['id']]!;
     _initializeRequests.remove(parsedData['id']);
     completer.complete();
-    return;
-  }
+  });
 
-  if (parsedData['type'] == 'absorbResponse') {
+  handle('absorb', () {
     final Completer<void> completer = _absorbRequests[parsedData['id']]!;
     _absorbRequests.remove(parsedData['id']);
     completer.complete();
-    return;
-  }
+  });
 
-  if (parsedData['type'] == 'squeezeResponse') {
+  handle('squeeze', () {
     final Completer<Uint8List> completer = _squeezeRequests[parsedData['id']]!;
     _squeezeRequests.remove(parsedData['id']);
     completer.complete(base64.decode(parsedData['bytes']));
-    return;
-  }
+  });
 
-  if (parsedData['type'] == 'sha3512Response') {
+  handle('sha3512', () {
     final Completer<Uint8List> completer = _sha3_512Requests[parsedData['id']]!;
     _sha3_512Requests.remove(parsedData['id']);
     completer.complete(base64.decode(parsedData['bytes']));
-    return;
-  }
+  });
 }

@@ -10,6 +10,12 @@ void main(List<String> args) {
 
     final strength = parsedData['strength'];
 
+    void handle(String type, Function() handler) {
+      if (parsedData['type'] == '${type}Request') {
+        handler();
+      }
+    }
+
     void respond(ServiceWorkerClient source, String type, Map<String, dynamic> data) {
       data['type'] = '${type}Response';
       data['id'] = parsedData['id'];
@@ -26,25 +32,25 @@ void main(List<String> args) {
       throw Exception('unrecognized parameter set');
     }
 
-    if (parsedData['type'] == 'keyGenRequest') {
+    handle('keyGen', () {
       final (pk, sk) = dsa.keyGen();
 
       respond(event.source, 'keyGen', {
         'pk': base64.encode(pk),
         'sk': base64.encode(sk),
       });
-    }
+    });
 
-    if (parsedData['type'] == 'keyGenWithSeedRequest') {
+    handle('keyGenWithSeed', () {
       final (pk, sk) = dsa.keyGenWithSeed(base64.decode(parsedData['seed']));
 
       respond(event.source, 'keyGenWithSeed', {
         'pk': base64.encode(pk),
         'sk': base64.encode(sk),
       });
-    }
+    });
 
-    if (parsedData['type'] == 'signRequest') {
+    handle('sign', () {
       final sig = dsa.sign(
         base64.decode(parsedData['sk']),
         base64.decode(parsedData['message']),
@@ -54,9 +60,9 @@ void main(List<String> args) {
       respond(event.source, 'sign', {
         'sig': base64.encode(sig),
       });
-    }
+    });
 
-    if (parsedData['type'] == 'signDeterministicallyRequest') {
+    handle('signDeterministically', () {
       final sig = dsa.signDeterministically(
         base64.decode(parsedData['sk']),
         base64.decode(parsedData['message']),
@@ -66,9 +72,9 @@ void main(List<String> args) {
       respond(event.source, 'signDeterministically', {
         'sig': base64.encode(sig),
       });
-    }
+    });
 
-    if (parsedData['type'] == 'verifyRequest') {
+    handle('verify', () {
       final valid = dsa.verify(
         base64.decode(parsedData['pk']),
         base64.decode(parsedData['message']),
@@ -79,6 +85,6 @@ void main(List<String> args) {
       respond(event.source, 'verify', {
         'valid': valid
       });
-    }
+    });
   });
 }

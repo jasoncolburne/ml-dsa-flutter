@@ -12,30 +12,38 @@ void main(List<String> args) {
   onMessage.listen((event) {
     final parsedData = json.decode(event.data);
 
-    if (parsedData['type'] == 'createRequest') {
+    void handle(String type, Function() handler) {
+      if (parsedData['type'] == '${type}Request') {
+        handler();
+      }
+    }
+
+    void respond(ServiceWorkerClient source, String type, Map<String, dynamic> data) {
+      data['type'] = '${type}Response';
+      data['id'] = parsedData['id'];
+      source.postMessage(json.encode(data));
+    }
+
+    handle('create', () {
       final instance = keccak.create();
       final instanceId = _nextKeccakInstance++;
 
       _keccakInstances[instanceId] = instance;
 
-      final data = {
-        'id': parsedData['id'],
-        'type': 'createResponse',
+      respond(event.source, 'create', {
         'instance': instanceId
-      };
-      event.source.postMessage(json.encode(data));
-    }
+      });
+    });
 
-    if (parsedData['type'] == 'freeRequest') {
+    handle('free', () {
       final instance = _keccakInstances[parsedData['instance']]!;
       keccak.free(instance);
       _keccakInstances.remove(parsedData['instance']);
 
-      final data = {'id': parsedData['id'], 'type': 'freeResponse'};
-      event.source.postMessage(json.encode(data));
-    }
+      respond(event.source, 'free', {});
+    });
 
-    if (parsedData['type'] == 'initializeRequest') {
+    handle('initialize', () {
       final instance = _keccakInstances[parsedData['instance']]!;
       keccak.initialize(
         instance,
@@ -45,47 +53,39 @@ void main(List<String> args) {
         parsedData['delimitedSuffix'],
       );
 
-      final data = {'id': parsedData['id'], 'type': 'initializeResponse'};
-      event.source.postMessage(json.encode(data));
-    }
+      respond(event.source, 'initialize', {});
+    });
 
-    if (parsedData['type'] == 'absorbRequest') {
+    handle('absorb', () {
       final instance = _keccakInstances[parsedData['instance']]!;
       keccak.absorb(
         instance,
         Uint8List.fromList(base64.decode(parsedData['message'])),
       );
 
-      final data = {'id': parsedData['id'], 'type': 'absorbResponse'};
-      event.source.postMessage(json.encode(data));
-    }
+      respond(event.source, 'absorb', {});
+    });
 
-    if (parsedData['type'] == 'squeezeRequest') {
+    handle('squeeze', () {
       final instance = _keccakInstances[parsedData['instance']]!;
       final bytes = keccak.squeeze(
         instance,
         parsedData['bytesToSqueeze'],
       );
 
-      final data = {
-        'id': parsedData['id'],
-        'type': 'squeezeResponse',
+      respond(event.source, 'squeeze', {
         'bytes': base64.encode(bytes)
-      };
-      event.source.postMessage(json.encode(data));
-    }
+      });
+    });
 
-    if (parsedData['type'] == 'sha3512Request') {
+    handle('sha3512', () {
       final bytes = keccak.sha3_512(
         Uint8List.fromList(base64.decode(parsedData['message'])),
       );
 
-      final data = {
-        'id': parsedData['id'],
-        'type': 'sha3512Response',
+      respond(event.source, 'sha3512', {
         'bytes': base64.encode(bytes)
-      };
-      event.source.postMessage(json.encode(data));
-    }
+      });
+    });
   });
 }
