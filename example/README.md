@@ -16,7 +16,8 @@ flutter run integration_test/integration_test.dart
 or, for web:
 
 ```
-flutter run -d chrome integration_test/integration_test.dart
+make service-worker
+flutter run -d chrome integration_test/web.dart
 ```
 
 ### Round-Trip Tests
@@ -28,7 +29,8 @@ flutter run test/ml_dsa_test.dart
 or, for web:
 
 ```
-flutter run -d chrome test/ml_dsa_test.dart
+make service-worker
+flutter run -d chrome test/web.dart
 ```
 
 ### Interactive app
@@ -42,5 +44,6 @@ flutter run lib/main.dart
 or 
 
 ```
-flutter run -d chrome lib/main.dart
+make service-worker
+flutter run -d chrome lib/web.dart
 ```

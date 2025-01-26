@@ -2,22 +2,22 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ml_dsa/ml_dsa.dart';
-import 'package:ml_dsa/async.dart';
 
-Future<bool> testRoundtrip(ParameterSet params) async {
-  final MLDSA dsa = MLDSA(params);
+import 'package:ml_dsa_example/sw_client.dart';
 
-  final (pk, sk) = await dsa.keyGenAsync();
+Future<bool> testRoundtrip(int strength) async {
+  final (pk, sk) = await MLDSASWClient.keyGen(strength);
   final msg = utf8.encode("message");
   final ctx = utf8.encode("context");
 
-  final sig = await dsa.signAsync(sk, msg, ctx);
+  final sig = await MLDSASWClient.sign(strength, sk, msg, ctx);
 
-  return await dsa.verifyAsync(pk, msg, sig, ctx);
+  return await MLDSASWClient.verify(strength, pk, msg, sig, ctx);
 }
 
-void main() {
+void main() async {
+  await MLDSASWClient.initialize();
+
   runApp(MyApp());
 }
 
@@ -38,17 +38,17 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     Future.microtask(() async {
-      final result44 = await testRoundtrip(MLDSA44Parameters());
+      final result44 = await testRoundtrip(44);
       setState(() {
         results['ML-DSA-44'] = result44;
       });
 
-      final result65 = await testRoundtrip(MLDSA65Parameters());
+      final result65 = await testRoundtrip(65);
       setState(() {
         results['ML-DSA-65'] = result65;
       });
 
-      final result87 = await testRoundtrip(MLDSA87Parameters());
+      final result87 = await testRoundtrip(87);
       setState(() {
         results['ML-DSA-87'] = result87;
       });

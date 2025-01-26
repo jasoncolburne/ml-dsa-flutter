@@ -21,5 +21,6 @@ or
 
 ```
 cd example
-flutter run -d chrome lib/main.dart
+make service-worker
+flutter run -d chrome lib/web.dart
 ```

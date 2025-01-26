@@ -4,20 +4,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hex/hex.dart';
 
-import 'package:ml_dsa/ml_dsa.dart';
-import 'package:ml_dsa/async.dart';
+import 'package:ml_dsa_example/sw_client.dart';
 
 import 'kat_MLDSA_44_det_pure.dart';
 import 'kat_MLDSA_65_det_pure.dart';
 import 'kat_MLDSA_87_det_pure.dart';
 
 Future<bool> testMLDSAKAT(
-    ParameterSet params, List<Map<String, String>> katVectors) async {
-  final dsa = MLDSA(params);
-
+    int strength, List<Map<String, String>> katVectors) async {
   for (final vector in katVectors) {
     final seed = Uint8List.fromList(HEX.decode(vector['Seed']!));
-    final (pk, sk) = await dsa.keyGenWithSeedAsync(seed);
+    final (pk, sk) = await MLDSASWClient.keyGenWithSeed(strength, seed);
 
     if (vector['PublicKey'] != HEX.encode(pk)) {
       print('bad pk:');
@@ -38,7 +35,7 @@ Future<bool> testMLDSAKAT(
     final message = Uint8List.fromList(HEX.decode(vector['Message']!));
     final ctx = Uint8List.fromList(HEX.decode(vector['Context']!));
 
-    final sig = await dsa.signDeterministicallyAsync(sk, message, ctx);
+    final sig = await MLDSASWClient.signDeterministically(strength, sk, message, ctx);
     final Uint8List sm = Uint8List(sig.length + message.length);
     sm.setRange(0, sig.length, sig);
     sm.setRange(sig.length, sm.length, message);
@@ -56,10 +53,7 @@ Future<bool> testMLDSAKAT(
 }
 
 void main() async {
-  if (kIsWeb) {
-    print(
-        'service worker not implemented on web, wait a while for results (a minute)');
-  }
+  await MLDSASWClient.initialize();
 
   runApp(MyApp());
 }
@@ -82,7 +76,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     Future.microtask(() async {
       final result44 =
-          await testMLDSAKAT(MLDSA44Parameters(), ML_DSA_44_TestVectors);
+          await testMLDSAKAT(44, ML_DSA_44_TestVectors);
       setState(() {
         results['ML-DSA-44'] = result44;
       });
@@ -90,7 +84,7 @@ class _MyAppState extends State<MyApp> {
 
     Future.microtask(() async {
       final result65 =
-          await testMLDSAKAT(MLDSA65Parameters(), ML_DSA_65_TestVectors);
+          await testMLDSAKAT(65, ML_DSA_65_TestVectors);
       setState(() {
         results['ML-DSA-65'] = result65;
       });
@@ -98,7 +92,7 @@ class _MyAppState extends State<MyApp> {
 
     Future.microtask(() async {
       final result87 =
-          await testMLDSAKAT(MLDSA87Parameters(), ML_DSA_87_TestVectors);
+          await testMLDSAKAT(87, ML_DSA_87_TestVectors);
       setState(() {
         results['ML-DSA-87'] = result87;
       });

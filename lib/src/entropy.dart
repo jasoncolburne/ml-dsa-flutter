@@ -1,8 +1,7 @@
 // TODO: confirm conformance
 
 import 'dart:math';
-
-import 'package:flutter/foundation.dart';
+import 'dart:typed_data';
 
 import 'sha3_512.dart';
 
@@ -83,7 +82,7 @@ class HashDRBG {
   Uint8List generate(int numberOfBits) {
     // need to set a lower limit for web due to overflow
     // this is safe, since we'll just be reseeding more often
-    final int reseedLimit = kIsWeb ? 1 << 31 : 1 << 48;
+    final int reseedLimit = 1 << 31;
 
     if (_reseedCounter > reseedLimit) {
       throw Exception('reseed required');

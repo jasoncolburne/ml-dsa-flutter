@@ -28,7 +28,8 @@ or, for web:
 
 ```
 cd example
-flutter run -d chrome integration_test/integration_test.dart
+make service-worker
+flutter run -d chrome integration_test/web.dart
 ```
 
 ### Round-Trip Tests
@@ -42,7 +43,8 @@ or, for web:
 
 ```
 cd example
-flutter run -d chrome test/ml_dsa_test.dart
+make service-worker
+flutter run -d chrome test/web.dart
 ```
 
 ### Interactive app
@@ -58,7 +60,8 @@ or
 
 ```
 cd example
-flutter run -d chrome lib/main.dart
+make service-worker
+flutter run -d chrome lib/web.dart
 ```
 
 ## Performance

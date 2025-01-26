@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
 import 'package:hex/hex.dart';
-import 'package:ml_dsa/ml_dsa.dart';
-import 'package:ml_dsa/async.dart';
 
-void main() {
+import 'sw_client.dart';
+
+void main() async {
+  await MLDSASWClient.initialize();
+
   runApp(const MyApp());
 }
 
@@ -19,11 +21,7 @@ class CryptoWidget extends StatefulWidget {
 }
 
 class _CryptoWidgetState extends State<CryptoWidget> {
-  final MLDSA _dsa44 = MLDSA(MLDSA44Parameters());
-  final MLDSA _dsa65 = MLDSA(MLDSA65Parameters());
-  final MLDSA _dsa87 = MLDSA(MLDSA87Parameters());
-
-  late MLDSA _dsa;
+  late int _strength;
 
   final TextEditingController _messageController = TextEditingController();
   final TextEditingController _contextController = TextEditingController();
@@ -36,7 +34,7 @@ class _CryptoWidgetState extends State<CryptoWidget> {
 
   @override
   void initState() {
-    _dsa = _dsa44;
+    _strength = 44;
     super.initState();
   }
 
@@ -58,7 +56,7 @@ class _CryptoWidgetState extends State<CryptoWidget> {
           children: [
             ElevatedButton(
               onPressed: () {
-                _dsa = _dsa44;
+                _strength = 44;
                 reset('ML-DSA-44');
               },
               child: Text('44'),
@@ -66,7 +64,7 @@ class _CryptoWidgetState extends State<CryptoWidget> {
             SizedBox(width: 24),
             ElevatedButton(
               onPressed: () {
-                _dsa = _dsa65;
+                _strength = 65;
                 reset('ML-DSA-65');
               },
               child: Text('65'),
@@ -74,7 +72,7 @@ class _CryptoWidgetState extends State<CryptoWidget> {
             SizedBox(width: 24),
             ElevatedButton(
               onPressed: () {
-                _dsa = _dsa87;
+                _strength = 87;
                 reset('ML-DSA-87');
               },
               child: Text('87'),
@@ -86,7 +84,7 @@ class _CryptoWidgetState extends State<CryptoWidget> {
         SizedBox(height: 8),
         ElevatedButton(
           onPressed: () async {
-            final (pk, sk) = await _dsa.keyGenAsync();
+            final (pk, sk) = await MLDSASWClient.keyGen(_strength);
             setState(() {
               _pk = pk;
               _sk = sk;
@@ -121,7 +119,7 @@ class _CryptoWidgetState extends State<CryptoWidget> {
             final msg = utf8.encode(_messageController.text);
             final ctx = utf8.encode(_contextController.text);
 
-            final sig = await _dsa.signAsync(_sk, msg, ctx);
+            final sig = await MLDSASWClient.sign(_strength, _sk, msg, ctx);
 
             setState(() {
               _sig = sig;
@@ -144,7 +142,7 @@ class _CryptoWidgetState extends State<CryptoWidget> {
             final msg = utf8.encode(_messageController.text);
             final ctx = utf8.encode(_contextController.text);
 
-            final result = await _dsa.verifyAsync(_pk, msg, _sig, ctx);
+            final result = await MLDSASWClient.verify(_strength, _pk, msg, _sig, ctx);
 
             SnackBar snackbar;
             if (result) {
